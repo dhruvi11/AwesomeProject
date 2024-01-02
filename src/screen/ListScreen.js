@@ -38,9 +38,27 @@ function ListScreen({navigation}) {
       .then(response => response.json())
       .then(data => {
         data.map((item, index) => {
+          if (index < offset) {
+            console.log('item>>>>>> ', item.id );
+            console.log('item>>>>>> ',  offset);
+            demoList.push(item);
+            setDemoList(demoList);
+            console.log('item>>>>>> ',  demoList);
+            setOffset(offset + 10);
+          }
+        });
+      })
+      .catch(error => console.error(error));
+  };
+
+  const callLoadMoreApi = async () => {
+    fetch('https://jsonplaceholder.typicode.com/posts')
+      .then(response => response.json())
+      .then(data => {
+        setDemoList([]);
+        data.map((item, index) => {
           console.log('item>>>>>> ', item.id < offset);
-          setDemoList([]);
-          if (item.id < offset) {
+        if (item.id < offset) {
             demoList.push(item);
             setDemoList(demoList);
             setOffset(offset + 10);
@@ -137,7 +155,7 @@ function ListScreen({navigation}) {
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           ListFooterComponent={renderFooter}
-          onEndReached={callDemoApi}
+          onEndReached={callLoadMoreApi}
           onEndReachedThreshold={0.5}
         />
       </View>
